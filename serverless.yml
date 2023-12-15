@@ -1,0 +1,64 @@
+service: pegue-o-pombo
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: go1.x
+  region: us-east-1
+  stage: ${opt:stage, "development"}
+  memorySize: 128 # mb
+  timeout: 20 # seconds
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - sqs:SendMessage
+        - sqs:ReceiveMessage
+        - sqs:DeleteMessage
+      Resource:
+        - Fn::GetAtt:
+            - emailQueue
+            - Arn
+        - Fn::GetAtt:
+            - emailQueueDLQ
+            - Arn
+package:
+  patterns:
+    - '!./**'
+    - ./bin/**
+functions:
+  processSQSMessage:
+    handler: handler.ProcessMessage
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt:
+              - emailQueue
+              - Arn
+          # Optional
+          batchSize: 10
+          # Optional, minimum is 0 and the maximum is 300 (seconds)
+          maximumBatchingWindow: 10
+    deadLetterQueue:
+      arn:
+        Fn::GetAtt:
+          - emailQueueDLQ
+          - Arn
+      batchSize: 5  # Número máximo de mensagens a serem processadas por invocação
+
+resources:
+  Resources:
+    emailQueue:
+      Type: "AWS::SQS::Queue"
+      Properties:
+        QueueName: ${self:service}-${self:provider.stage}-emailQueue
+        RedrivePolicy:
+          deadLetterTargetArn:
+            Fn::GetAtt:
+              - emailQueueDLQ
+              - Arn
+          maxReceiveCount: 5  # Número máximo de vezes que uma mensagem pode ser recebida antes de ser enviada para a DLQ
+    
+    emailQueueDLQ:
+      Type: "AWS::SQS::Queue"
+      Properties:
+        QueueName: ${self:service}-${self:provider.stage}-emailQueue-DLQ
