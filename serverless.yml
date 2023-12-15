@@ -38,12 +38,6 @@ functions:
           batchSize: 10
           # Optional, minimum is 0 and the maximum is 300 (seconds)
           maximumBatchingWindow: 10
-    deadLetterQueue:
-      arn:
-        Fn::GetAtt:
-          - emailQueueDLQ
-          - Arn
-      batchSize: 5  # Número máximo de mensagens a serem processadas por invocação
 
 resources:
   Resources:
