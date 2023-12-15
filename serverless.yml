@@ -22,9 +22,9 @@ provider:
             - emailQueueDLQ
             - Arn
 package:
-  patterns:
-    - '!./**'
+  include:
     - ./bin/**
+    - ./*.go
 functions:
   processSQSMessage:
     handler: handler.ProcessMessage
