@@ -26,7 +26,7 @@ jobs:
     - name: Build
       run: |
         go mod tidy
-        go build -ldflags="-s -w" -o bin/handler handler/main.go
+        go build -tags netgo -ldflags "-w -extldflags -static" -o bin/handler handler/main.go
       env:
         GOARCH: "amd64"
         GOOS: "linux"
