@@ -28,7 +28,7 @@ package:
 
 functions:
   processSQSMessage:
-    handler: handler.main
+    handler: bin/handler
     events:
       - sqs:
           arn:
