@@ -1,4 +1,4 @@
-package main
+package sqs
 
 import (
 	"context"
@@ -9,7 +9,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/sqs"
 )
 
-func newSQSSession() (*sqs.Client, error) {
+func NewSQSSession() (*sqs.Client, error) {
 	cfg, err := config.LoadDefaultConfig(context.TODO())
 	if err != nil {
 		return nil, err
@@ -18,7 +18,7 @@ func newSQSSession() (*sqs.Client, error) {
 	return sqs.NewFromConfig(cfg), nil
 }
 
-func deleteSQSMessage(client *sqs.Client, queueURL string, receiptHandle string) error {
+func DeleteSQSMessage(client *sqs.Client, queueURL string, receiptHandle string) error {
 	input := &sqs.DeleteMessageInput{
 		QueueUrl:      aws.String(queueURL),
 		ReceiptHandle: aws.String(receiptHandle),

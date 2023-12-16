@@ -1,4 +1,4 @@
-package main
+package ses
 
 import (
 	"context"
@@ -9,7 +9,15 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/sesv2/types"
 )
 
-func newSESSession() (*sesv2.Client, error) {
+// EmailEvent SQS type
+type EmailEvent struct {
+	Subject          string   `json:"Subject"`
+	Body             string   `json:"Body"`
+	ToAddresses      []string `json:"ToAddresses"`
+	FromEmailAddress string   `json:"FromEmailAddress"`
+}
+
+func NewSESSession() (*sesv2.Client, error) {
 	cfg, err := config.LoadDefaultConfig(context.TODO())
 	if err != nil {
 		return nil, err
@@ -18,7 +26,7 @@ func newSESSession() (*sesv2.Client, error) {
 	return sesv2.NewFromConfig(cfg), nil
 }
 
-func sendEmail(client *sesv2.Client, emailEvent EmailEvent) error {
+func SendEmail(client *sesv2.Client, emailEvent EmailEvent) error {
 	emailInput := &sesv2.SendEmailInput{
 		Destination: &types.Destination{
 			ToAddresses: emailEvent.ToAddresses,
