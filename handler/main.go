@@ -44,9 +44,9 @@ func ProcessMessage(ctx context.Context, sqsEvent events.SQSEvent) error {
 		}
 
 		// Delete message
-		queueURL := record.EventSourceARN
+		arn := record.EventSourceARN
 		receiptHandle := record.ReceiptHandle
-		err = sqsCli.DeleteSQSMessage(sqsClient, queueURL, receiptHandle)
+		err = sqsCli.DeleteSQSMessage(sqsClient, arn, receiptHandle)
 		if err != nil {
 			log.Printf("Error deleting SQS message: %v", err)
 			return err

@@ -18,13 +18,18 @@ func NewSQSSession() (*sqs.Client, error) {
 	return sqs.NewFromConfig(cfg), nil
 }
 
-func DeleteSQSMessage(client *sqs.Client, queueURL string, receiptHandle string) error {
+func DeleteSQSMessage(client *sqs.Client, arn string, receiptHandle string) error {
+	queueURL, err := getQueueURL(client, arn)
+	if err != nil {
+		return err
+	}
+
 	input := &sqs.DeleteMessageInput{
 		QueueUrl:      aws.String(queueURL),
 		ReceiptHandle: aws.String(receiptHandle),
 	}
 
-	_, err := client.DeleteMessage(context.Background(), input)
+	_, err = client.DeleteMessage(context.Background(), input)
 	if err != nil {
 		log.Printf("Error deleting message from queue: %v", err)
 		return err
@@ -32,4 +37,16 @@ func DeleteSQSMessage(client *sqs.Client, queueURL string, receiptHandle string)
 
 	log.Println("Message deleted successfully")
 	return nil
+}
+
+// getQueueURL obtém a URL da fila SQS usando o ARN da fila.
+func getQueueURL(client *sqs.Client, arn string) (string, error) {
+	result, err := client.GetQueueUrl(context.TODO(), &sqs.GetQueueUrlInput{
+		QueueName: aws.String(arn), // Passe o ARN diretamente como QueueName
+	})
+	if err != nil {
+		log.Printf("Error getting queue URL: %v", err)
+		return "", err
+	}
+	return *result.QueueUrl, nil
 }
