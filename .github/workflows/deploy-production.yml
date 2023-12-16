@@ -26,10 +26,7 @@ jobs:
     - name: Build
       run: |
         go mod tidy
-        go build -tags netgo -ldflags "-w -extldflags -static" -o bin/handler handler/main.go
-      env:
-        GOARCH: "amd64"
-        GOOS: "linux"
+        env GOARCH=amd64 GOOS=linux go build -ldflags="-s -w" -o bin/handler handler/main.go
   
     - name: Serverless Deploy
       run: serverless deploy --stage prod
