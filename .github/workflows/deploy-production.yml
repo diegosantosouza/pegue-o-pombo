@@ -26,7 +26,7 @@ jobs:
     - name: Build
       run: |
         go mod tidy
-        env GOOS=linux go build -ldflags="-s -w" -o bin/handler handler/main.go
+        env GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -ldflags="-s -w" -o bin/handler handler/main.go
   
     - name: Serverless Deploy
       run: serverless deploy --stage prod
