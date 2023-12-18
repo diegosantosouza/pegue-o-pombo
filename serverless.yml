@@ -63,3 +63,4 @@ resources:
       Type: "AWS::SQS::Queue"
       Properties:
         QueueName: ${self:service}-${self:provider.stage}-emailQueue-DLQ
+        MessageRetentionPeriod: 1209600  # 14 dias em segundos (86400 segundos/dia * 14 dias)
