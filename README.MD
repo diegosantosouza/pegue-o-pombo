@@ -4,6 +4,8 @@
 
 Esta função Lambda AWS foi projetada para processar mensagens da fila SQS (Simple Queue Service) e enviar e-mails usando o serviço SES (Simple Email Service).
 
+![Diagrama](pegue-o-pombo.svg)
+
 ## Funcionalidades Principais
 
 - **Receber Mensagens SQS**: A função é acionada automaticamente quando novas mensagens são enviadas para a fila SQS associada.
