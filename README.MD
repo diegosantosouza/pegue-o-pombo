@@ -1,4 +1,3 @@
-# Lambda SES-SQS-Processor
 
 ## Descrição
 
